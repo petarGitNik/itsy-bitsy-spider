@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 
 __version__ = 'v0.1.0'
-_status__ = 'Development'
+__status__ = 'Development'
 
 
 class Startit(object):

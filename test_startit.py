@@ -15,7 +15,7 @@ from startit import StartitException
 
 
 __version__ = 'v0.1.0'
-_status__ = 'Development'
+__status__ = 'Development'
 
 
 # Setup mock for urllib.request.urlopen

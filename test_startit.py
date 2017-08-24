@@ -14,7 +14,7 @@ _status__ = 'Development'
 def jobs():
     return Startit('https://startit.rs/poslovi/pretraga/python/')
 
-def test_invalid_link():
+def test_invalid_link_1():
     """
     Test if the invalid link raises an exception. What constitutes a
     valid link? The link of the following format is valid:
@@ -23,8 +23,20 @@ def test_invalid_link():
 
     Every other form is not valid.
     """
-    with pytest(StartitException):
-        Startit('https://startit.rs/poslovi/pretraga/python/')
+    with pytest.raises(StartitException):
+        Startit('https://startit.rs/poslovi/pretraga/python/qa/')
+
+def test_invalid_link_2():
+    """
+    Test if the invalid link raises an exception. What constitutes a
+    valid link? The link of the following format is valid:
+
+    https://startit.rs/poslovi/pretraga/[category]/
+
+    Every other form is not valid.
+    """
+    with pytest.raises(StartitException):
+        Startit('https://startit.rs/poslovi/pretraga/')
 
 def test_valid_link():
     """

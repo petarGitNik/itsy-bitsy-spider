@@ -5,6 +5,7 @@ import re
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
+from bs4 import BeautifulSoup
 
 
 __version__ = 'v0.1.0'
@@ -33,11 +34,11 @@ class Startit(object):
             return url
         raise StartitException('Invalid link.')
 
-    def retrieve_page(self):
+    def retrieve_page(self, parser='lxml'):
         """
         Retrieve page with job listing.
         """
-        pass
+        return BeautifulSoup(urlopen(self.url).read(), parser)
 
 
 class StartitException(Exception):

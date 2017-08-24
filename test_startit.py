@@ -6,7 +6,9 @@ import pytest
 from urllib.request import addinfourl
 from urllib.request import build_opener
 from urllib.request import install_opener
-from urllib.request import HTTPHandler
+from urllib.request import HTTPSHandler
+from io import StringIO
+from bs4 import BeautifulSoup
 
 from startit import Startit
 from startit import StartitException
@@ -19,7 +21,7 @@ _status__ = 'Development'
 # Setup mock for urllib.request.urlopen
 def read_mock_page():
     with open('example_page_python.html', 'r', encoding='utf-8') as f:
-        return f.read()
+        return StringIO(f.read())
 
 def mock_startit_response(request):
     mock_url = 'https://startit.rs/poslovi/pretraga/python/'
@@ -29,12 +31,13 @@ def mock_startit_response(request):
             read_mock_page(), 'mock header', request.get_full_url()
         )
         response.code = 200
+        response.msg = 'OK'
         return response
 
 
-class MockHttpHandler(HTTPHandler):
+class MockHttpHandler(HTTPSHandler):
 
-    def http_open(self, request):
+    def https_open(self, request):
         return mock_startit_response(request)
 
 
@@ -79,3 +82,10 @@ def test_valid_link():
         Startit('https://startit.rs/poslovi/pretraga/python/')
     except StartitException:
         pytest.fail('Exception raised, but not expceted.')
+
+def test_page_retrieval(jobs):
+    """
+    Test the retrieve_page method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    assert jobs.retrieve_page() == soup

@@ -19,6 +19,7 @@ class Startit(object):
         Initiate Startit object.
         """
         self.url = self.sanitize(url)
+        self.page = self.retrieve_page()
 
     def sanitize(self, url):
         """

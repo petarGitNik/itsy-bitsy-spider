@@ -89,3 +89,10 @@ def test_page_retrieval(jobs):
     """
     soup = BeautifulSoup(read_mock_page(), 'lxml')
     assert jobs.retrieve_page() == soup
+
+def test_page_retrieved(jobs):
+    """
+    Test if the page object in instantiated together with Startit object.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    assert jobs.page == soup

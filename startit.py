@@ -2,6 +2,9 @@
 
 
 import re
+from urllib.request import urlopen
+from urllib.error import HTTPError
+from urllib.error import URLError
 
 
 __version__ = 'v0.1.0'
@@ -29,6 +32,12 @@ class Startit(object):
         if len(url) == len(candidate):
             return url
         raise StartitException('Invalid link.')
+
+    def retrieve_page(self):
+        """
+        Retrieve page with job listing.
+        """
+        pass
 
 
 class StartitException(Exception):

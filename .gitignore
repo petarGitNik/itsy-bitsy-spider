@@ -12,3 +12,8 @@ pip-selfcheck.json
 [Ii]nclude
 [Ll]ib
 [Ll]ib64
+
+# Ignore project related files
+example_page_python_files/
+example_page_python.html
+mock.py

@@ -111,7 +111,19 @@ class Startit(object):
         """
         Extract content from mini job ad.
         """
-        pass
+        url = mini.h1.a['href']
+        job_title = mini.h1.a.string.strip()
+        company_title = mini.div.string.strip()
+        tags = self.extract_tags(
+            mini.find('div', attrs={'class' : 'oglas-mini-tagovi'}).find_all('small')
+        )
+
+        return {
+            'company-title' : company_title,
+            'job-title' : job_title,
+            'url' : url,
+            'tags' : tags,
+        }
 
     def extract_tags(self, smalls):
         """

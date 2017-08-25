@@ -8,6 +8,7 @@ How to use Startit class?
 from startit import Startit
 startit = Startit('https://startit.rs/poslovi/pretraga/python/')
 startit.extract_divs()
+startit.extract_jobs()
 ```
 """
 

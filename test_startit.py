@@ -96,3 +96,12 @@ def test_page_retrieved(jobs):
     """
     soup = BeautifulSoup(read_mock_page(), 'lxml')
     assert jobs.page == soup
+
+@pytest.mark.skip(reason='too soon')
+def test_premium_jobs(jobs):
+    """
+    Test the get_premium_jobs method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    premium = soup.find_all('div', attrs={'class' : 'listing-oglas-premium'})
+    assert 1 == 1

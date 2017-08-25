@@ -6,6 +6,7 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
 from bs4 import BeautifulSoup
+from collections import deque
 
 
 __version__ = 'v0.1.0'
@@ -20,6 +21,8 @@ class Startit(object):
         """
         self.url = self.sanitize(url)
         self.page = self.retrieve_page()
+        self.raw_data = deque()
+        self.jobs = deque()
 
     def sanitize(self, url):
         """
@@ -40,7 +43,40 @@ class Startit(object):
         Retrieve page with job listing.
         """
         return BeautifulSoup(urlopen(self.url).read(), parser)
+        # add try catch, HTTPError URLError
+        # if anything goes wrong, send email!
 
+    def get_premium_jobs(self):
+        """
+        Parse page to get all premium sponsored job ads. Append the result to
+        raw_data.
+        """
+        pass
+
+    def get_standard_jobs(self):
+        """
+        Parse page to get standard sponsored job ads. Append the result to
+        raw_data.
+        """
+        pass
+
+    def get_mini_jobs(self):
+        """
+        Parse page to extract all jobs from the mini class. Append the result to
+        raw_data.
+        """
+        pass
+
+    def pack_by_type(self, div, type):
+        """
+        Pack divs by type, to make them suitable for further processing. E.g.
+
+        [list of soup objects] -> {
+            'type' : StartitJobTypes.PREMIUM,
+            'job-post' : <soup/div object>
+        }
+        """
+        pass
 
 class StartitException(Exception):
     """

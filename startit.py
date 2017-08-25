@@ -1,6 +1,17 @@
 #!/usr/bin/python3
 
 
+"""
+How to use Startit class?
+
+```python
+from startit import Startit
+startit = Startit('https://startit.rs/poslovi/pretraga/python/')
+startit.extract_divs()
+```
+"""
+
+
 import re
 from urllib.request import urlopen
 from urllib.error import HTTPError
@@ -75,7 +86,7 @@ class Startit(object):
                     mini, StartitJobTypes.MINI
                 )
             )
-            
+
         return
 
     def get_premium_jobs(self):

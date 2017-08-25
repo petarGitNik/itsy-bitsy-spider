@@ -63,10 +63,41 @@ class Startit(object):
         objects, where a job dictionary is in the following form:
 
         {
-            'company-title' : title,
+            'company-title' : company_title,
+            'job-title' : job_title,
             'url' : url,
             'tags' : tags,
         }
+        """
+        pass
+
+    def extract_from_premium(self, premium):
+        """
+        Extract content from premium job ad.
+        """
+        text = premium.find('div', attrs={'class' : 'listing-oglas-premium-text'})
+
+        url = text.h1.a['href']
+        job_title = text.h1.a.string.strip()
+        company_title = text.div.a.string.strip()
+        tags = None
+
+        return {
+            'company-title' : company_title,
+            'job-title' : job_title,
+            'url' : url,
+            'tags' : tags,
+        }
+
+    def extract_from_standard(self, standard):
+        """
+        Extract content from standard job ad.
+        """
+        pass
+
+    def extract_from_mini(self, mini):
+        """
+        Extract content from mini job ad.
         """
         pass
 

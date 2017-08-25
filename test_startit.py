@@ -146,3 +146,17 @@ def test_extract_divs(jobs):
     raw_data = pickle.load(open('pickled_raw_data.p', 'rb'))
     jobs.extract_divs()
     assert jobs.raw_data == raw_data
+
+def test_extract_from_premium(jobs):
+    """
+    Test extract_from_premium method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    premium = soup.find_all('div', attrs={'class' : 'listing-oglas-premium'})
+    result = {
+        'company-title' : 'Joker Games',
+        'job-title' : 'C# .NET Developer',
+        'url' : 'https://startit.rs/poslovi/c-net-developer-meridianbet/',
+        'tags' : ['.net', 'chrarp', 'node.js', 'python'],
+    }
+    assert jobs.extract_from_premium(premium[0]) == result

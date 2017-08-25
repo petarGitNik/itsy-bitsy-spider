@@ -80,7 +80,7 @@ class Startit(object):
         url = text.h1.a['href']
         job_title = text.h1.a.string.strip()
         company_title = text.div.a.string.strip()
-        tags = None
+        tags = self.extract_tags(text.find_all('small'))
 
         return {
             'company-title' : company_title,

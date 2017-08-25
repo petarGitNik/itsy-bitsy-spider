@@ -198,3 +198,12 @@ def test_extract_from_mini(jobs):
         'tags' : ['Beograd', 'python'],
     }
     assert jobs.extract_from_mini(mini[0]) == result
+
+def test_extract_jobs(jobs):
+    """
+    Test extract_jobs method. This method should return a deque of job
+    dictionaries.
+    """
+    result = pickle.load(open('pickled_jobs.p', 'rb'))
+    jobs.extract_jobs()
+    assert jobs.jobs == result

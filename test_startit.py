@@ -170,3 +170,17 @@ def test_extract_from_premium(jobs):
         'tags' : ['.net', 'chrarp', 'node.js', 'python'],
     }
     assert jobs.extract_from_premium(premium[0]) == result
+
+def test_extract_from_standard(jobs):
+    """
+    Test extract_from_standard method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    standard = soup.find_all('div', attrs={'class' : 'listing-oglas-standard'})
+    result = {
+        'company-title' : 'AllThingsTalk',
+        'job-title' : 'Backend Engineer',
+        'url' : 'https://startit.rs/poslovi/backend-engineer-allthingstalk/',
+        'tags' : ['backend', 'csharp', 'devops', 'iot', 'linux', 'python'],
+    }
+    assert jobs.extract_from_standard(standard[0]) == result

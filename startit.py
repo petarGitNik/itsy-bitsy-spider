@@ -93,7 +93,19 @@ class Startit(object):
         """
         Extract content from standard job ad.
         """
-        pass
+        text = standard.find('div', attrs={'class' : 'listing-oglas-standard-text'})
+
+        url = text.h1.a['href']
+        job_title = text.h1.a.string.strip()
+        company_title = text.div.a.string.strip()
+        tags = self.extract_tags(text.find_all('small'))
+
+        return {
+            'company-title' : company_title,
+            'job-title' : job_title,
+            'url' : url,
+            'tags' : tags,
+        }
 
     def extract_from_mini(self, mini):
         """

@@ -46,6 +46,38 @@ class Startit(object):
         # add try catch, HTTPError URLError
         # if anything goes wrong, send email!
 
+    def extract_divs(self):
+        """
+        Extract all job related divs. These divs come in three 'flavours':
+        premium, standard, and mini. Each of those object is labled correspondingly
+        using constants from the StartitJobTypes class.
+        """
+        premium = self.get_premium_jobs()
+        if premium:
+            self.raw_data.extend(
+                self.pack_by_type(
+                    premium, StartitJobTypes.PREMIUM
+                )
+            )
+
+        standard = self.get_standard_jobs()
+        if standard:
+            self.raw_data.extend(
+                self.pack_by_type(
+                    standard, StartitJobTypes.STANDARD
+                )
+            )
+
+        mini = self.get_mini_jobs()
+        if mini:
+            self.raw_data.extend(
+                self.pack_by_type(
+                    mini, StartitJobTypes.MINI
+                )
+            )
+            
+        return
+
     def get_premium_jobs(self):
         """
         Parse page to get all premium sponsored job ads. Append the result to

@@ -3,6 +3,7 @@
 
 import pytest
 
+import pickle
 from urllib.request import addinfourl
 from urllib.request import build_opener
 from urllib.request import install_opener
@@ -137,3 +138,11 @@ def test_mini_jobs(jobs):
     soup = BeautifulSoup(read_mock_page(), 'lxml')
     mini = soup.find_all('div', attrs={'class' : 'oglas-mini'})
     assert jobs.get_mini_jobs() == mini
+
+def test_extract_divs(jobs):
+    """
+    Test extract_divs method.
+    """
+    raw_data = pickle.load(open('pickled_raw_data.p', 'rb'))
+    jobs.extract_divs()
+    assert jobs.raw_data == raw_data

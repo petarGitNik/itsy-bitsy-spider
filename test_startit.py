@@ -184,3 +184,17 @@ def test_extract_from_standard(jobs):
         'tags' : ['backend', 'csharp', 'devops', 'iot', 'linux', 'python'],
     }
     assert jobs.extract_from_standard(standard[0]) == result
+
+def test_extract_from_mini(jobs):
+    """
+    Test extract_from_mini method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    mini = soup.find_all('div', attrs={'class' : 'oglas-mini'})
+    result = {
+        'company-title' : 'Itekako doo',
+        'job-title' : 'Python Developer',
+        'url' : 'https://www.dropbox.com/s/fxlbin0i9z5189h/Py.pdf?dl=0',
+        'tags' : ['Beograd', 'python'],
+    }
+    assert jobs.extract_from_mini(mini[0]) == result

@@ -9,8 +9,10 @@ from urllib.request import install_opener
 from urllib.request import HTTPSHandler
 from io import StringIO
 from bs4 import BeautifulSoup
+from collections import deque
 
 from startit import Startit
+from startit import StartitJobTypes
 from startit import StartitException
 
 
@@ -96,6 +98,21 @@ def test_page_retrieved(jobs):
     """
     soup = BeautifulSoup(read_mock_page(), 'lxml')
     assert jobs.page == soup
+
+def test_pack_by_type(jobs):
+    """
+    Test the pack_by_type method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    premium = soup.find_all('div', attrs={'class' : 'listing-oglas-premium'})
+    result = deque([{
+        'type' : StartitJobTypes.PREMIUM,
+        'job-post' : premium[0]
+    }, {
+        'type' : StartitJobTypes.PREMIUM,
+        'job-post' : premium[1]
+    }])
+    assert jobs.pack_by_type(premium, StartitJobTypes.PREMIUM) == result
 
 @pytest.mark.skip(reason='too soon')
 def test_premium_jobs(jobs):

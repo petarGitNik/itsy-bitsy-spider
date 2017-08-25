@@ -67,7 +67,7 @@ class Startit(object):
         """
         pass
 
-    def pack_by_type(self, div, type):
+    def pack_by_type(self, divs, job_type):
         """
         Pack divs by type, to make them suitable for further processing. E.g.
 
@@ -76,7 +76,20 @@ class Startit(object):
             'job-post' : <soup/div object>
         }
         """
-        pass
+        packed = deque()
+        for div in divs:
+            packed.append({
+                'type' : job_type,
+                'job-post' : div,
+            })
+        return packed
+
+
+class StartitJobTypes(object):
+    PREMIUM = 'premium'
+    STANDARD = 'standard'
+    MINI = 'mini'
+
 
 class StartitException(Exception):
     """

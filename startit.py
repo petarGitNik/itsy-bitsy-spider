@@ -57,6 +57,19 @@ class Startit(object):
         # add try catch, HTTPError URLError
         # if anything goes wrong, send email!
 
+    def extract_jobs(self):
+        """
+        Using the raw_data, extract jobs as deque collection of  dictionary
+        objects, where a job dictionary is in the following form:
+
+        {
+            'company-title' : title,
+            'url' : url,
+            'tags' : tags,
+        }
+        """
+        pass
+
     def extract_divs(self):
         """
         Extract all job related divs. These divs come in three 'flavours':

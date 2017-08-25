@@ -147,6 +147,16 @@ def test_extract_divs(jobs):
     jobs.extract_divs()
     assert jobs.raw_data == raw_data
 
+def test_extract_tags(jobs):
+    """
+    Test extrag tags method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    premium = soup.find('div', attrs={'class' : 'listing-oglas-premium'})
+    candidates = premium.find_all('small')
+    result = ['.net', 'chrarp', 'node.js', 'python']
+    assert jobs.extract_tags(candidates) == result
+
 def test_extract_from_premium(jobs):
     """
     Test extract_from_premium method.

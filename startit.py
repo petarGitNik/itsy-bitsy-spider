@@ -101,6 +101,15 @@ class Startit(object):
         """
         pass
 
+    def extract_tags(self, smalls):
+        """
+        Extract tags from job ads. Tags are located between <small> html tag.
+        """
+        tags = []
+        for small in smalls:
+            tags.append(small.a.string.strip())
+        return tags
+
     def extract_divs(self):
         """
         Extract all job related divs. These divs come in three 'flavours':

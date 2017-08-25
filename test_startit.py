@@ -205,5 +205,6 @@ def test_extract_jobs(jobs):
     dictionaries.
     """
     result = pickle.load(open('pickled_jobs.p', 'rb'))
+    jobs.extract_divs()
     jobs.extract_jobs()
     assert jobs.jobs == result

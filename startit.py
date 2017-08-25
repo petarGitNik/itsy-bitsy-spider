@@ -69,7 +69,16 @@ class Startit(object):
             'tags' : tags,
         }
         """
-        pass
+        for job in self.raw_data:
+            if job['type'] == StartitJobTypes.PREMIUM:
+                self.jobs.append(self.extract_from_premium(job['job-post']))
+            elif job['type'] == StartitJobTypes.STANDARD:
+                self.jobs.append(self.extract_from_standard(job['job-post']))
+            elif job['type'] == StartitJobTypes.MINI:
+                self.jobs.append(self.extract_from_mini(job['job-post']))
+            else:
+                raise StartitException('Unknown job type!')
+        return
 
     def extract_from_premium(self, premium):
         """

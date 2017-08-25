@@ -114,11 +114,26 @@ def test_pack_by_type(jobs):
     }])
     assert jobs.pack_by_type(premium, StartitJobTypes.PREMIUM) == result
 
-@pytest.mark.skip(reason='too soon')
 def test_premium_jobs(jobs):
     """
     Test the get_premium_jobs method.
     """
     soup = BeautifulSoup(read_mock_page(), 'lxml')
     premium = soup.find_all('div', attrs={'class' : 'listing-oglas-premium'})
-    assert 1 == 1
+    assert jobs.get_premium_jobs() == premium
+
+def test_standard_jobs(jobs):
+    """
+    Test the get_standard_jobs method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    standard = soup.find_all('div', attrs={'class' : 'listing-oglas-standard'})
+    assert jobs.get_standard_jobs() == standard
+
+def test_mini_jobs(jobs):
+    """
+    Test the get_mini_jobs method.
+    """
+    soup = BeautifulSoup(read_mock_page(), 'lxml')
+    mini = soup.find_all('div', attrs={'class' : 'oglas-mini'})
+    assert jobs.get_mini_jobs() == mini

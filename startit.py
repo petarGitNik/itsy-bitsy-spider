@@ -51,21 +51,21 @@ class Startit(object):
         Parse page to get all premium sponsored job ads. Append the result to
         raw_data.
         """
-        pass
+        return self.page.find_all('div', attrs={'class' : 'listing-oglas-premium'})
 
     def get_standard_jobs(self):
         """
         Parse page to get standard sponsored job ads. Append the result to
         raw_data.
         """
-        pass
+        return self.page.find_all('div', attrs={'class' : 'listing-oglas-standard'})
 
     def get_mini_jobs(self):
         """
         Parse page to extract all jobs from the mini class. Append the result to
         raw_data.
         """
-        pass
+        return self.page.find_all('div', attrs={'class' : 'oglas-mini'})
 
     def pack_by_type(self, divs, job_type):
         """

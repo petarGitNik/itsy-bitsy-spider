@@ -67,11 +67,12 @@ class Startit(object):
          );
     """
 
-    def __init__(self, url):
+    def __init__(self, url, email):
         """
         Initiate Startit object.
         """
         self.url = self.sanitize(url)
+        self.email = email
         self.page = self.retrieve_page()
         self.raw_data = deque()
         self.jobs = deque()
@@ -334,7 +335,7 @@ class StartitException(Exception):
 if __name__ == '__main__':
     url, email = parse_arguments()
 
-    startit = Startit(url)
+    startit = Startit(url, email)
 
     startit.extract_divs()
     startit.extract_jobs()

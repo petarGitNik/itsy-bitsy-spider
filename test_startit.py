@@ -51,7 +51,7 @@ install_opener(mock_opener)
 
 @pytest.fixture
 def jobs():
-    return Startit('https://startit.rs/poslovi/pretraga/python/')
+    return Startit('https://startit.rs/poslovi/pretraga/python/', 'dummy@example.com')
 
 def test_invalid_link_1():
     """
@@ -63,7 +63,7 @@ def test_invalid_link_1():
     Every other form is not valid.
     """
     with pytest.raises(StartitException):
-        Startit('https://startit.rs/poslovi/pretraga/python/qa/')
+        Startit('https://startit.rs/poslovi/pretraga/python/qa/', 'dummy@example.com')
 
 def test_invalid_link_2():
     """
@@ -75,14 +75,14 @@ def test_invalid_link_2():
     Every other form is not valid.
     """
     with pytest.raises(StartitException):
-        Startit('https://startit.rs/poslovi/pretraga/')
+        Startit('https://startit.rs/poslovi/pretraga/', 'dummy@example.com')
 
 def test_valid_link():
     """
     Test if valid link does not raise an exception.
     """
     try:
-        Startit('https://startit.rs/poslovi/pretraga/python/')
+        Startit('https://startit.rs/poslovi/pretraga/python/', 'dummy@example.com')
     except StartitException:
         pytest.fail('Exception raised, but not expceted.')
 

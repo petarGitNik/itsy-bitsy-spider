@@ -104,17 +104,26 @@ class Startit(object):
         if self.db_exists(db_path):
             pass
 
-        conn = sqlite3.connect(db_path)
+        self.execute_first_time_scarping(db_path)
+        return
+
+    def execute_first_time_scarping(self, path):
+        """
+        Execute this method when the bot is scraping for the first time. Create
+        database and populate it with new jobs.
+        """
+        conn = sqlite3.connect(path)
         c = conn.cursor()
         c.executescript(self.DB_TEMPLATE)
 
-        self.write_a_record_to_db(????)
+        for job in self.jobs:
+            self.write_a_record_to_db(c, job, True)
 
         conn.commit()
         conn.close()
         return
 
-    def write_a_record_to_db(self, cursor, job, active, timestamp):
+    def write_a_record_to_db(self, cursor, job, active):
         """
         Write a single record to database.
         """

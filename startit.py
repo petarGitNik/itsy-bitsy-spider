@@ -9,11 +9,15 @@ from startit import Startit
 startit = Startit('https://startit.rs/poslovi/pretraga/python/')
 startit.extract_divs()
 startit.extract_jobs()
+
+startit.check_and_notify()
 ```
 """
 
 
+import os
 import re
+import sqlite3
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
@@ -26,6 +30,17 @@ __status__ = 'Development'
 
 
 class Startit(object):
+    DB_TEMPLATE = """
+        DROP TABLE IF EXISTS jobs;
+
+        CREATE TABLE jobs (
+          CompanyTitle TEXT,
+          JobTitle TEXT,
+          Url TEXT,
+          Tags TEXT,
+          Active TEXT,
+          FirstCrawled TEXT
+    """
 
     def __init__(self, url):
         """
@@ -57,6 +72,27 @@ class Startit(object):
         return BeautifulSoup(urlopen(self.url).read(), parser)
         # add try catch, HTTPError URLError
         # if anything goes wrong, send email!
+
+    def check_and_notify(self):
+        """
+        Check if there are new jobs, and notify if there are. If the spider is
+        set loose for the first time, just scrape the page, and do not notify.
+        """
+        db_path = './db.sqlite'
+        if self.db_exists(db_path):
+            pass
+
+        conn = sqlite3.connect(db_path)
+        c = conn.cursor()
+        c.executescript(self.DB_TEMPLATE)
+        conn.commit()
+        return
+
+    def db_exists(self, path):
+        """
+        Check if database exists on a given path.
+        """
+        return os.path.exists(path)
 
     def extract_jobs(self):
         """

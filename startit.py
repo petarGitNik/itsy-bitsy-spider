@@ -18,6 +18,7 @@ startit.check_and_notify()
 import os
 import re
 import sqlite3
+from datetime import datetime
 from argparse import ArgumentParser
 from urllib.request import urlopen
 from urllib.error import HTTPError
@@ -106,7 +107,26 @@ class Startit(object):
         conn = sqlite3.connect(db_path)
         c = conn.cursor()
         c.executescript(self.DB_TEMPLATE)
+
+        self.write_a_record_to_db(????)
+
         conn.commit()
+        conn.close()
+        return
+
+    def write_a_record_to_db(self, cursor, job, active, timestamp):
+        """
+        Write a single record to database.
+        """
+        to_write = (
+            job['company-title'],
+            job['job-title'],
+            job['url'],
+            job['tags'],
+            active,
+            str(datetime.now()),
+        )
+        cursor.execute('INSERT INTO jobs VALUES(?,?,?,?,?,?)', to_write)
         return
 
     def db_exists(self, path):

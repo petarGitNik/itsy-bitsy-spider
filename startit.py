@@ -274,12 +274,13 @@ class Startit(object):
         company_title = title.strip() if title else text.div.a.span.text.strip()
         tags = self.extract_tags(text.find_all('small'))
 
-        return OrderedDict({
-            'company-title' : company_title,
-            'job-title' : job_title,
-            'url' : url,
-            'tags' : tags,
-        })
+        d = OrderedDict()
+        d['company-title'] = company_title
+        d['job-title'] = job_title
+        d['url'] = url
+        d['tags'] = tags
+
+        return d
 
     def extract_from_standard(self, standard):
         """
@@ -294,12 +295,13 @@ class Startit(object):
         company_title = title.strip() if title else text.div.a.span.text.strip()
         tags = self.extract_tags(text.find_all('small'))
 
-        return OrderedDict({
-            'company-title' : company_title,
-            'job-title' : job_title,
-            'url' : url,
-            'tags' : tags,
-        })
+        d = OrderedDict()
+        d['company-title'] = company_title
+        d['job-title'] = job_title
+        d['url'] = url
+        d['tags'] = tags
+
+        return d
 
     def extract_from_mini(self, mini):
         """
@@ -312,12 +314,13 @@ class Startit(object):
             mini.find('div', attrs={'class' : 'oglas-mini-tagovi'}).find_all('small')
         )
 
-        return OrderedDict({
-            'company-title' : company_title,
-            'job-title' : job_title,
-            'url' : url,
-            'tags' : tags,
-        })
+        d = OrderedDict()
+        d['company-title'] = company_title
+        d['job-title'] = job_title
+        d['url'] = url
+        d['tags'] = tags
+
+        return d
 
     def extract_tags(self, smalls):
         """

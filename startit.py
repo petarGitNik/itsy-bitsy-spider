@@ -19,6 +19,9 @@ import os
 import re
 import json
 import sqlite3
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from datetime import datetime
 from argparse import ArgumentParser
 from urllib.request import Request
@@ -73,6 +76,16 @@ class Startit(object):
         """
         self.url = self.sanitize(url)
         self.email = email
+
+        sensitive_data = {}
+        with open('./email.config', 'r') as f:
+            for line in f:
+                key, val = line.split(':')
+                sensitive_data[key] = val
+
+        self.spidy_mail = sensitive_data['email']
+        self.spidy_password = sensitive_data['password']
+
         self.page = self.retrieve_page()
         self.raw_data = deque()
         self.jobs = deque()
@@ -119,6 +132,7 @@ class Startit(object):
             return
 
         self.execute_first_time_scarping(db_path)
+        self.send_welcome_email()
         return
 
     def execute_first_time_scarping(self, path):
@@ -136,6 +150,36 @@ class Startit(object):
         conn.commit()
         conn.close()
         return
+
+    def send_welcome_email(self):
+        """
+        When the script is executed for the first time, send greeting email.
+        """
+        from_address = self.spidy_mail
+        password = self.spidy_password
+        to_address = self.email
+
+        msg = MIMEMultipart()
+        msg['From'] = from_address
+        msg['To'] = to_address
+        msg['Subject'] = "Greetings, it's your itsy bitsy spider /\(00)/\\"
+
+        body = """
+        The itsy bitsy spider climbed up the waterspout.
+        Down came the rain
+        and washed the spider out.
+        Out came the sun
+        and dried up all the rain
+        and the itsy bitsy spider climbed up the spout again.
+        """
+        msg.attach(MIMEText(body, 'plain'))
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(from_address, password)
+        text = msg.as_string()
+        server.sendmail(from_address, to_address, text)
+        server.quit()
 
     def write_a_record_to_db(self, cursor, job, active):
         """

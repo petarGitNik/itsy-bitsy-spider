@@ -133,23 +133,30 @@ class Startit(object):
 
             tup_jobs = self.turn_jobs_into_tuples()
 
-            print(tup_jobs[0])
-            print(stale_data[0])
-            print(tup_jobs == stale_data)
-
             new_jobs = set(tup_jobs).difference(stale_data)
             expired_jobs = set(stale_data).difference(tup_jobs)
 
-            # self.deactivate_expired_jobs()
-            # self.add_new_jobs()
-            #
-            # self.notify_master_about_new_jobs()
+            if expired_jobs:
+                self.deactivate_expired_jobs(expired_jobs)
 
+            if new_jobs:
+                self.add_new_jobs(new_jobs)
+                self.notify_master_about_new_jobs(new_jobs)
+            
             return
 
         self.execute_first_time_scarping(db_path)
         self.send_welcome_email()
         return
+
+    def deactivate_expired_jobs(expired_jobs):
+        pass
+
+    def add_new_jobs(new_jobs):
+        pass
+
+    def notify_master_about_new_jobs(new_jobs):
+        pass
 
     def turn_jobs_into_tuples(self):
         tup_jobs = []

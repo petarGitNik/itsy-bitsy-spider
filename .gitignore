@@ -20,3 +20,4 @@ mock.py
 pickled_raw_data.p
 pickled_jobs.p
 db.sqlite
+email.config

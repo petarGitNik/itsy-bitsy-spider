@@ -129,12 +129,17 @@ class Startit(object):
         """
         db_path = './db.sqlite'
         if self.db_exists(db_path):
-            pass
-
             stale_data = self.get_existing_data(db_path)
-            # new_jobs =
-            # expired_jobs =
-            #
+
+            tup_jobs = self.turn_jobs_into_tuples()
+
+            print(tup_jobs[0])
+            print(stale_data[0])
+            print(tup_jobs == stale_data)
+
+            new_jobs = set(tup_jobs).difference(stale_data)
+            expired_jobs = set(stale_data).difference(tup_jobs)
+
             # self.deactivate_expired_jobs()
             # self.add_new_jobs()
             #
@@ -145,6 +150,13 @@ class Startit(object):
         self.execute_first_time_scarping(db_path)
         self.send_welcome_email()
         return
+
+    def turn_jobs_into_tuples(self):
+        tup_jobs = []
+        for job in self.jobs:
+            job['tags'] = json.dumps(job['tags'])
+            tup_jobs.append(tuple(job.values()))
+        return tup_jobs
 
     def get_existing_data(self, path):
         """
@@ -282,12 +294,12 @@ class Startit(object):
         company_title = title.strip() if title else text.div.a.span.text.strip()
         tags = self.extract_tags(text.find_all('small'))
 
-        return {
+        return OrderedDict({
             'company-title' : company_title,
             'job-title' : job_title,
             'url' : url,
             'tags' : tags,
-        }
+        })
 
     def extract_from_mini(self, mini):
         """
@@ -300,12 +312,12 @@ class Startit(object):
             mini.find('div', attrs={'class' : 'oglas-mini-tagovi'}).find_all('small')
         )
 
-        return {
+        return OrderedDict({
             'company-title' : company_title,
             'job-title' : job_title,
             'url' : url,
             'tags' : tags,
-        }
+        })
 
     def extract_tags(self, smalls):
         """

@@ -137,23 +137,30 @@ class Startit(object):
             expired_jobs = set(stale_data).difference(tup_jobs)
 
             if expired_jobs:
-                self.deactivate_expired_jobs(expired_jobs)
+                self.deactivate_expired_jobs(expired_jobs, db_path)
 
             if new_jobs:
-                self.add_new_jobs(new_jobs)
+                self.add_new_jobs(new_jobs, db_path)
                 self.notify_master_about_new_jobs(new_jobs)
-            
+
             return
 
         self.execute_first_time_scarping(db_path)
         self.send_welcome_email()
         return
 
-    def deactivate_expired_jobs(expired_jobs):
+    def deactivate_expired_jobs(expired_jobs, path):
         pass
 
-    def add_new_jobs(new_jobs):
-        pass
+    def add_new_jobs(new_jobs, path):
+        conn = sqlite3.connect(path)
+        c = conn.cursor()
+
+        for job in new_jobs:
+            self.write_a_tuple_to_db(c, job, True)
+
+        conn.close()
+        return
 
     def notify_master_about_new_jobs(new_jobs):
         pass
@@ -223,6 +230,21 @@ class Startit(object):
         text = msg.as_string()
         server.sendmail(from_address, to_address, text)
         server.quit()
+
+    def write_a_tuple_to_db(self, cursor, job, active):
+        """
+        Write a single record to database.
+        """
+        to_write = (
+            job[0],
+            job[1],
+            job[2],
+            job[3],
+            active,
+            str(datetime.now()),
+        )
+        cursor.execute('INSERT INTO jobs VALUES(?,?,?,?,?,?)', to_write)
+        return
 
     def write_a_record_to_db(self, cursor, job, active):
         """

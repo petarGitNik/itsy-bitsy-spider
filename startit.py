@@ -18,6 +18,7 @@ startit.check_and_notify()
 import os
 import re
 import sqlite3
+from argparse import ArgumentParser
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
@@ -27,6 +28,26 @@ from collections import deque
 
 __version__ = 'v0.1.0'
 __status__ = 'Development'
+
+
+def parse_arguments():
+    """
+    Example:
+
+    startit.py https://startit.rs/poslovi/pretraga/python/ example@mail.com
+
+    For more information type:
+
+    crawlddit.py --help
+    """
+    parser = ArgumentParser(description='startit job crawler')
+
+    parser.add_argument('URL', help='source link')
+    parser.add_argument('email', help='Email receiving notifications')
+
+    args = parser.parse_args()
+
+    return (args.URL, args.email)
 
 
 class Startit(object):
@@ -266,3 +287,7 @@ class StartitException(Exception):
     This exception is raised if the supplied link is not valid.
     """
     pass
+
+
+if __name__ == '__main__':
+    url, email = parse_arguments()

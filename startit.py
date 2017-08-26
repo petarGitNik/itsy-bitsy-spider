@@ -29,6 +29,7 @@ from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
 from bs4 import BeautifulSoup
+from collections import OrderedDict
 from collections import deque
 
 
@@ -129,11 +130,34 @@ class Startit(object):
         db_path = './db.sqlite'
         if self.db_exists(db_path):
             pass
+
+            stale_data = self.get_existing_data(db_path)
+            # new_jobs =
+            # expired_jobs =
+            #
+            # self.deactivate_expired_jobs()
+            # self.add_new_jobs()
+            #
+            # self.notify_master_about_new_jobs()
+
             return
 
         self.execute_first_time_scarping(db_path)
         self.send_welcome_email()
         return
+
+    def get_existing_data(self, path):
+        """
+        Return all active jobs from the database.
+        """
+        conn = sqlite3.connect(path)
+        c = conn.cursor()
+
+        c.execute('SELECT CompanyTitle, JobTitle, Url, Tags FROM jobs WHERE Active=1')
+        rows = c.fetchall()
+
+        conn.close()
+        return rows
 
     def execute_first_time_scarping(self, path):
         """
@@ -238,12 +262,12 @@ class Startit(object):
         company_title = title.strip() if title else text.div.a.span.text.strip()
         tags = self.extract_tags(text.find_all('small'))
 
-        return {
+        return OrderedDict({
             'company-title' : company_title,
             'job-title' : job_title,
             'url' : url,
             'tags' : tags,
-        }
+        })
 
     def extract_from_standard(self, standard):
         """

@@ -20,6 +20,7 @@ import re
 import sqlite3
 from datetime import datetime
 from argparse import ArgumentParser
+from urllib.request import Request
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from urllib.error import URLError
@@ -91,7 +92,16 @@ class Startit(object):
         """
         Retrieve page with job listing.
         """
-        return BeautifulSoup(urlopen(self.url).read(), parser)
+        return BeautifulSoup(urlopen(
+            Request(
+                self.url,
+                data=None,
+                headers={
+                    'User-Agent' : 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:55.0) Gecko/20100101 Firefox/55.0'
+                }
+            )
+        ).read(), parser)
+        #return BeautifulSoup(urlopen(self.url).read(), parser)
         # add try catch, HTTPError URLError
         # if anything goes wrong, send email!
 

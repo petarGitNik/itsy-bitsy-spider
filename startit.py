@@ -17,6 +17,7 @@ startit.check_and_notify()
 
 import os
 import re
+import json
 import sqlite3
 from datetime import datetime
 from argparse import ArgumentParser
@@ -60,9 +61,10 @@ class Startit(object):
           CompanyTitle TEXT,
           JobTitle TEXT,
           Url TEXT,
-          Tags TEXT,
+          Tags BLOB,
           Active TEXT,
           FirstCrawled TEXT
+         );
     """
 
     def __init__(self, url):
@@ -113,6 +115,7 @@ class Startit(object):
         db_path = './db.sqlite'
         if self.db_exists(db_path):
             pass
+            return
 
         self.execute_first_time_scarping(db_path)
         return
@@ -141,7 +144,7 @@ class Startit(object):
             job['company-title'],
             job['job-title'],
             job['url'],
-            job['tags'],
+            json.dumps(job['tags']),
             active,
             str(datetime.now()),
         )
@@ -330,3 +333,10 @@ class StartitException(Exception):
 
 if __name__ == '__main__':
     url, email = parse_arguments()
+
+    startit = Startit(url)
+
+    startit.extract_divs()
+    startit.extract_jobs()
+
+    startit.check_and_notify()

@@ -150,7 +150,21 @@ class Startit(object):
         return
 
     def deactivate_expired_jobs(expired_jobs, path):
-        pass
+        conn = sqlite3.connect(path)
+        c = conn.cursor()
+
+        for job in expired_jobs:
+            c.execute("""
+                UPDATE jobs
+                SET Active=0
+                WHERE CompanyTitle=? AND JobTitle=? AND Url=? AND Tags=?
+            """, (
+                job[0], job[1], job[2], job[3]
+            ))
+
+        conn.commit()
+        conn.close()
+        return
 
     def add_new_jobs(new_jobs, path):
         conn = sqlite3.connect(path)
@@ -159,6 +173,7 @@ class Startit(object):
         for job in new_jobs:
             self.write_a_tuple_to_db(c, job, True)
 
+        conn.commit()
         conn.close()
         return
 

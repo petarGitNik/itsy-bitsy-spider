@@ -149,7 +149,7 @@ class Startit(object):
         self.send_welcome_email()
         return
 
-    def deactivate_expired_jobs(expired_jobs, path):
+    def deactivate_expired_jobs(self, expired_jobs, path):
         conn = sqlite3.connect(path)
         c = conn.cursor()
 
@@ -166,7 +166,7 @@ class Startit(object):
         conn.close()
         return
 
-    def add_new_jobs(new_jobs, path):
+    def add_new_jobs(self, new_jobs, path):
         conn = sqlite3.connect(path)
         c = conn.cursor()
 
@@ -177,8 +177,30 @@ class Startit(object):
         conn.close()
         return
 
-    def notify_master_about_new_jobs(new_jobs):
-        pass
+    def notify_master_about_new_jobs(self, new_jobs):
+        from_address = self.spidy_mail
+        password = self.spidy_password
+        to_address = self.email
+
+        msg = MIMEMultipart()
+        msg['From'] = from_address
+        msg['To'] = to_address
+        msg['Subject'] = "Hey, a new job! ::::)"
+
+        body = ''
+
+        for job in new_jobs:
+            body += job[0] + '\n' + job[1] + '\n' + job[2] + '\n' + job[3] + '\n\n'
+
+        msg.attach(MIMEText(body.encode('utf-8'), _charset='utf-8'))
+
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(from_address, password)
+        text = msg.as_string()
+        server.sendmail(from_address, to_address, text)
+        server.quit()
+        return
 
     def turn_jobs_into_tuples(self):
         tup_jobs = []
@@ -245,6 +267,7 @@ class Startit(object):
         text = msg.as_string()
         server.sendmail(from_address, to_address, text)
         server.quit()
+        return
 
     def write_a_tuple_to_db(self, cursor, job, active):
         """

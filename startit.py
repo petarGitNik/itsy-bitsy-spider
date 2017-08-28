@@ -118,7 +118,7 @@ class Startit(object):
                 }
             )
         ).read(), parser)
-        #return BeautifulSoup(urlopen(self.url).read(), parser)
+        # return BeautifulSoup(urlopen(self.url).read(), parser)
         # add try catch, HTTPError URLError
         # if anything goes wrong, send email!
 

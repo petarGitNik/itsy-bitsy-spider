@@ -6,7 +6,11 @@ How to use Startit class?
 
 ```python
 from startit import Startit
-startit = Startit('https://startit.rs/poslovi/pretraga/python/')
+startit = Startit('https://startit.rs/poslovi/pretraga/python/', 'email@example.com')
+
+startit.db_path = db_path
+startit.config_path = config_path
+
 startit.extract_divs()
 startit.extract_jobs()
 
@@ -51,10 +55,12 @@ def parse_arguments():
 
     parser.add_argument('URL', help='source link')
     parser.add_argument('email', help='Email receiving notifications')
+    parser.add_argument('database', help='Path to the database')
+    parser.add_argument('config', help='Path to configuration file')
 
     args = parser.parse_args()
 
-    return (args.URL, args.email)
+    return (args.URL, args.email, args.database, args.config)
 
 
 class Startit(object):
@@ -78,18 +84,26 @@ class Startit(object):
         self.url = self.sanitize(url)
         self.email = email
 
+        self.db_path = None
+        self.config_path = None
+
+        self.page = self.retrieve_page()
+        self.raw_data = deque()
+        self.jobs = deque()
+
+    def read_sensitive_data(self):
+        """
+        Read in data from the configuration file.
+        """
         sensitive_data = {}
-        with open('./email.config', 'r') as f:
+        with open(self.config_path, 'r') as f:
             for line in f:
                 key, val = line.split(':')
                 sensitive_data[key] = val
 
         self.spidy_mail = sensitive_data['email']
         self.spidy_password = sensitive_data['password']
-
-        self.page = self.retrieve_page()
-        self.raw_data = deque()
-        self.jobs = deque()
+        return
 
     def sanitize(self, url):
         """
@@ -127,9 +141,8 @@ class Startit(object):
         Check if there are new jobs, and notify if there are. If the spider is
         set loose for the first time, just scrape the page, and do not notify.
         """
-        db_path = './db.sqlite'
-        if self.db_exists(db_path):
-            stale_data = self.get_existing_data(db_path)
+        if self.db_exists(self.db_path):
+            stale_data = self.get_existing_data(self.db_path)
 
             tup_jobs = self.turn_jobs_into_tuples()
 
@@ -137,15 +150,15 @@ class Startit(object):
             expired_jobs = set(stale_data).difference(tup_jobs)
 
             if expired_jobs:
-                self.deactivate_expired_jobs(expired_jobs, db_path)
+                self.deactivate_expired_jobs(expired_jobs, self.db_path)
 
             if new_jobs:
-                self.add_new_jobs(new_jobs, db_path)
+                self.add_new_jobs(new_jobs, self.db_path)
                 self.notify_master_about_new_jobs(new_jobs)
 
             return
 
-        self.execute_first_time_scarping(db_path)
+        self.execute_first_time_scarping(self.db_path)
         self.send_welcome_email()
         return
 
@@ -483,9 +496,14 @@ class StartitException(Exception):
 
 
 if __name__ == '__main__':
-    url, email = parse_arguments()
+    url, email, db_path, config_path = parse_arguments()
 
     startit = Startit(url, email)
+
+    startit.db_path = db_path
+    startit.config_path = config_path
+
+    startit.read_sensitive_data()
 
     startit.extract_divs()
     startit.extract_jobs()
